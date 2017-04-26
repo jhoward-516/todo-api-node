@@ -93,6 +93,8 @@ app.patch('/todos/:id', (req, res) => {
     });
 });
 
+//POST /users
+
 app.post('/users', (req, res) => {
     let body = _.pick(req.body, ['email', 'password']);
     let user = new User (body);
@@ -110,6 +112,19 @@ app.post('/users', (req, res) => {
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
+
+//POST /users/login {email, password}
+
+app.post('/users/login', (req, res) => {
+    let body = _.pick(req.body, ['email', 'password']);
+
+    User.findByCredentials(body.email, body.password).then( (user) => {
+        res.send(user);
+    }).catch( (e) => {
+        res.status(400).send();
+    });
+});
+
 
 app.listen(port, () => {
     console.log(` Server started on port ${port}... `);
